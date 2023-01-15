@@ -4,16 +4,16 @@ from cluedo.cluedo import *
 def print_notebook(notebook):
     print("----------------------")
     for character in notebook.get_characters():
-        tick = "x" if character.is_innocent() else " "
-        print(f"| {character.name:<14} | {tick} |")
+        tick = "x" if character['innocent'] else " "
+        print(f"| {character['name']:<14} | {tick} |")
     print("----------------------")
     for weapon in notebook.get_weapons():
-        tick = "x" if weapon.is_innocent() else " "
-        print(f"| {weapon.name:<14} | {tick} |")
+        tick = "x" if weapon['innocent'] else " "
+        print(f"| {weapon['name']:<14} | {tick} |")
     print("----------------------")
     for room in notebook.get_rooms():
-        tick = "x" if room.is_innocent() else " "
-        print(f"| {room.name:<14} | {tick} |")
+        tick = "x" if room['innocent'] else " "
+        print(f"| {room['name']:<14} | {tick} |")
     print("----------------------")
 
 
