@@ -4,19 +4,20 @@ from cluedo.cluedo import *
 
 def print_notebook(game):
     notebook = game.get_notebook()
-    print("----------------------")
+    print("+----------------+---+")
     for character in notebook.get_characters():
         tick = "x" if character['innocent'] else " "
         print(f"| {character['name']:<14} | {tick} |")
-    print("----------------------")
+    print("+----------------+---+")
     for weapon in notebook.get_weapons():
         tick = "x" if weapon['innocent'] else " "
         print(f"| {weapon['name']:<14} | {tick} |")
-    print("----------------------")
+    print("+----------------+---+")
     for room in notebook.get_rooms():
         tick = "x" if room['innocent'] else " "
         print(f"| {room['name']:<14} | {tick} |")
-    print("----------------------")
+    print("+----------------+---+")
+
 
 def get_initial_cards(game):
     choices = game.ALL_CARDS
@@ -31,7 +32,6 @@ def get_initial_cards(game):
 
 def main():
     game = Cluedo()
-    print_notebook(game)
     get_initial_cards(game)
     print_notebook(game)
 

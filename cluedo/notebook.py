@@ -57,3 +57,4 @@ class Notebook:
                     return
         
         raise ValueError(f"{subject} is not a valid character, weapon or room")
+     

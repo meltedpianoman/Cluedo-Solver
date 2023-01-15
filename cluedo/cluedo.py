@@ -2,7 +2,6 @@ from cluedo.notebook import *
 
 
 class Cluedo:
-
     def __init__(self):
         self.notebook = Notebook()
         self.ALL_CARDS = []
