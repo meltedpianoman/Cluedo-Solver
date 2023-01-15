@@ -27,7 +27,19 @@ class Notebook:
         return self.notes['rooms']
 
     def make_note(self, subject, innocent):
-        for character in self.get_characters():
-            if character['name'] is subject:
-                character['innocent'] = innocent
-                break
+        if isinstance(subject, Character):
+            for character in self.get_characters():
+                if character['name'] is subject:
+                    character['innocent'] = innocent
+                    break
+        elif isinstance(subject, Weapon):
+            for weapon in self.get_weapons():
+                if weapon['name'] is subject:
+                    weapon['innocent'] = innocent
+                    break
+        elif isinstance(subject, Room):
+            for room in self.get_rooms():
+                if room['name'] is subject:
+                    room['innocent'] = innocent
+                    break
+    
