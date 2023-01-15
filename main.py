@@ -23,20 +23,9 @@ def get_initial_cards(game):
     choices.append("Done")
     while True:
         choice = inquirer.list_input("initial cards", choices=choices)
-        if choice is "Done":
+        if choice == "Done":
             break
-        try:
-            game.make_note(Character[choice], True)
-        except:
-            pass        
-        try:    
-            game.make_note(Weapon[choice], True)
-        except:
-            pass
-        try:
-            game.make_note(Room[choice], True)
-        except:
-            pass
+        game.make_note(choice, True)
         choices.remove(choice)
  
 
