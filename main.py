@@ -1,6 +1,5 @@
-import inquirer
 from cluedo.cluedo import *
-
+import inquirer
 
 def print_notebook(game):
     notebook = game.get_notebook()
@@ -20,8 +19,7 @@ def print_notebook(game):
 
 
 def get_initial_cards(game):
-    choices = game.ALL_CARDS
-    choices.append("Done")
+    choices = ["Done"] + game.ALL_CARDS
     while True:
         choice = inquirer.list_input("initial cards", choices=choices)
         if choice == "Done":

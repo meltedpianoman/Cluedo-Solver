@@ -36,6 +36,7 @@ class Notebook:
                 if character['name'] is subject:
                     character['innocent'] = innocent
                     return
+
         try:
             subject = Weapon[subject]
         except:
