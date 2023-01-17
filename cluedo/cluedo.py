@@ -2,7 +2,8 @@ from cluedo.notebook import *
 
 
 class Cluedo:
-    def __init__(self):
+    def __init__(self, players):
+        self.players = players
         self.notebook = Notebook()
         self.ALL_CARDS = []
         for character in Character:
@@ -11,6 +12,9 @@ class Cluedo:
             self.ALL_CARDS.append(weapon)
         for room in Room:
             self.ALL_CARDS.append(room)
+
+    def get_players(self):
+        return self.players
 
     def get_notebook(self):
         return self.notebook

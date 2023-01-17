@@ -18,10 +18,22 @@ def print_notebook(game):
     print("+----------------+---+")
 
 
+def get_player_names():
+    players = []
+    name = inquirer.text("What is your name?")
+    players.append(name)
+    while True:
+        name = inquirer.text("Next player name?")
+        if not name:
+            break
+        players.append(name)
+        
+    return players
+
 def get_initial_cards(game):
     choices = ["Done"] + game.ALL_CARDS
     while True:
-        choice = inquirer.list_input("initial cards", choices=choices)
+        choice = inquirer.list_input("Give your initial cards", choices=choices)
         if choice == "Done":
             break
         game.make_note(choice, True)
@@ -29,7 +41,8 @@ def get_initial_cards(game):
  
 
 def main():
-    game = Cluedo()
+    players = get_player_names()
+    game = Cluedo(players)
     get_initial_cards(game)
     print_notebook(game)
 
