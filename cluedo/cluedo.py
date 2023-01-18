@@ -4,7 +4,7 @@ from cluedo.notebook import *
 class Cluedo:
     def __init__(self, players):
         self.players = players
-        self.notebook = Notebook()
+        self.notebook = Notebook(self.players)
         self.ALL_CARDS = []
         for character in Character:
             self.ALL_CARDS.append(character)
