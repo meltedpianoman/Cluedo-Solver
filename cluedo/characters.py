@@ -1,7 +1,7 @@
 from enum import auto
 from strenum import StrEnum
 
-class Character(StrEnum):
+class Characters(StrEnum):
     MissScarlett = auto()
     ReverendGreen = auto()
     ColonelMustard = auto()

@@ -6,11 +6,11 @@ class Cluedo:
         self.players = players
         self.notebook = Notebook(self.players)
         self.ALL_CARDS = []
-        for character in Character:
+        for character in Characters:
             self.ALL_CARDS.append(character)
-        for weapon in Weapon:
+        for weapon in Weapons:
             self.ALL_CARDS.append(weapon)
-        for room in Room:
+        for room in Rooms:
             self.ALL_CARDS.append(room)
 
     def get_players(self):

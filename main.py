@@ -15,32 +15,32 @@ class ConsoleGame:
             player_info += " " + player + " |"
         print(f"|                |   |{player_info}")
         print(header)
-        for character in Character:
-            innocent = "X" if notebook.get_card_status(character) is Notebook.CardStatus.Innocent else " "
+        for card in Characters:
+            innocent = "X" if notebook.get_card_status(card) is CardStatus.Innocent else " "
             player_info = ""
             for player in self.players:
-                status = notebook.get_player_status(character, player)
-                info = "x" if status is Notebook.PlayerStatus.Owns else "-" if status is Notebook.PlayerStatus.DoesNotOwn else " "
+                status = notebook.get_player_status(card, player)
+                info = "x" if status is PlayerStatus.Owns else "-" if status is PlayerStatus.DoesNotOwn else " "
                 player_info += info.center(len(player) + 2) + "|"
-            print(f"| {character:<14} | {innocent} |{player_info}")
+            print(f"| {card:<14} | {innocent} |{player_info}")
         print(header)
-        for weapon in Weapon:
-            innocent = "X" if notebook.get_card_status(weapon) is Notebook.CardStatus.Innocent else " "
+        for card in Weapons:
+            innocent = "X" if notebook.get_card_status(card) is CardStatus.Innocent else " "
             player_info = ""
             for player in self.players:
-                status = notebook.get_player_status(weapon, player)
-                info = "x" if status is Notebook.PlayerStatus.Owns else "-" if status is Notebook.PlayerStatus.DoesNotOwn else " "
+                status = notebook.get_player_status(card, player)
+                info = "x" if status is PlayerStatus.Owns else "-" if status is PlayerStatus.DoesNotOwn else " "
                 player_info += info.center(len(player) + 2) + "|"
-            print(f"| {weapon:<14} | {innocent} |{player_info}")
+            print(f"| {card:<14} | {innocent} |{player_info}")
         print(header)
-        for room in Room:
-            innocent = "X" if notebook.get_card_status(room) is Notebook.CardStatus.Innocent else " "
+        for card in Rooms:
+            innocent = "X" if notebook.get_card_status(card) is CardStatus.Innocent else " "
             player_info = ""
             for player in self.players:
-                status = notebook.get_player_status(room, player)
-                info = "x" if status is Notebook.PlayerStatus.Owns else "-" if status is Notebook.PlayerStatus.DoesNotOwn else " "
+                status = notebook.get_player_status(card, player)
+                info = "x" if status is PlayerStatus.Owns else "-" if status is PlayerStatus.DoesNotOwn else " "
                 player_info += info.center(len(player) + 2) + "|"
-            print(f"| {room:<14} | {innocent} |{player_info}")
+            print(f"| {card:<14} | {innocent} |{player_info}")
         print(header)
     
     

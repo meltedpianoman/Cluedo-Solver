@@ -1,7 +1,7 @@
 from enum import auto
 from strenum import StrEnum
 
-class Room(StrEnum):
+class Rooms(StrEnum):
     Ballroom = auto()
     Kitchen = auto()
     Conservatory = auto()
