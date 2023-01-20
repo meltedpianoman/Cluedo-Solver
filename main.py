@@ -2,46 +2,58 @@ from cluedo.cluedo import *
 import inquirer
 
 class ConsoleGame:
+    def __init__(self):
+        pass
+        
+    class NotebookPrinter:
+        def __init__(self, game, players):
+            self.notebook = game.get_notebook()
+            self.players = players
+            self.header = "+----------------+---+"
+            for player in self.players:
+                self.header += "-"
+                self.header += "-" * len(player)
+                self.header += "-+"
+
+        
+        def _print_header(self):
+            print(self.header)
+
+        
+        def _print_players(self):
+            player_info = ""
+            for player in self.players:
+                player_info += " " + player + " |"
+            print(f"|                |   |{player_info}")
+
+        
+        def _print_cards(self, cards):
+            for card in cards:
+                innocent = "X" if self.notebook.get_card_status(card) is CardStatus.Innocent else " "
+                player_info = ""
+                for player in self.players:
+                    status = self.notebook.get_player_status(card, player)
+                    info = "x" if status is PlayerStatus.Owns else "-" if status is PlayerStatus.DoesNotOwn else " "
+                    player_info += info.center(len(player) + 2) + "|"
+                print(f"| {card:<14} | {innocent} |{player_info}")
+
+        
+        def print(self):
+            self._print_header()
+            self._print_players()
+            self._print_header()
+            self._print_cards(Characters)
+            self._print_header()
+            self._print_cards(Weapons)
+            self._print_header()
+            self._print_cards(Rooms)
+            self._print_header()
+
+    
     def print_notebook(self):
-        notebook = self.game.get_notebook()
-        header = "+----------------+---+"
-        for player in self.players:
-            header += "-"
-            header += "-" * len(player)
-            header += "-+"
-        print(header)
-        player_info = ""
-        for player in self.players:
-            player_info += " " + player + " |"
-        print(f"|                |   |{player_info}")
-        print(header)
-        for card in Characters:
-            innocent = "X" if notebook.get_card_status(card) is CardStatus.Innocent else " "
-            player_info = ""
-            for player in self.players:
-                status = notebook.get_player_status(card, player)
-                info = "x" if status is PlayerStatus.Owns else "-" if status is PlayerStatus.DoesNotOwn else " "
-                player_info += info.center(len(player) + 2) + "|"
-            print(f"| {card:<14} | {innocent} |{player_info}")
-        print(header)
-        for card in Weapons:
-            innocent = "X" if notebook.get_card_status(card) is CardStatus.Innocent else " "
-            player_info = ""
-            for player in self.players:
-                status = notebook.get_player_status(card, player)
-                info = "x" if status is PlayerStatus.Owns else "-" if status is PlayerStatus.DoesNotOwn else " "
-                player_info += info.center(len(player) + 2) + "|"
-            print(f"| {card:<14} | {innocent} |{player_info}")
-        print(header)
-        for card in Rooms:
-            innocent = "X" if notebook.get_card_status(card) is CardStatus.Innocent else " "
-            player_info = ""
-            for player in self.players:
-                status = notebook.get_player_status(card, player)
-                info = "x" if status is PlayerStatus.Owns else "-" if status is PlayerStatus.DoesNotOwn else " "
-                player_info += info.center(len(player) + 2) + "|"
-            print(f"| {card:<14} | {innocent} |{player_info}")
-        print(header)
+        printer = ConsoleGame.NotebookPrinter(self.game, self.players)
+        printer.print()
+        return
     
     
     def get_player_names(self):
