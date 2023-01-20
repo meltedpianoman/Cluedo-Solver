@@ -40,13 +40,9 @@ class Notebook:
                     self.players[p] = PlayerStatus.DoesNotOwn
             
 
-    def __init__(self, players):
+    def __init__(self, cards, players):
         self.cards = {}
-        for card in Characters:
-            self.cards.update({card: Notebook.CardInfo(card, players)})
-        for card in Weapons:
-            self.cards.update({card: Notebook.CardInfo(card, players)})
-        for card in Rooms:
+        for card in cards:
             self.cards.update({card: Notebook.CardInfo(card, players)})
 
     
