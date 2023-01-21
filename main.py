@@ -65,21 +65,49 @@ class ConsoleGame:
         self.myself = inquirer.text("What is your name?")
         self.players.append(self.myself)
         while True:
-            name = inquirer.text("Next player name?")
+            name = inquirer.text("Next player name (ENTER when done)?")
             if not name:
                 break
             self.players.append(name)
         self.game = Cluedo(self.players)
 
     
-    def get_initial_cards(self):
-        choices = ["Done"] + self.game.ALL_CARDS
+    def _get_initial_cards_for_category(self, cards, category):
+        choices = ["Done"] + cards
         while True:
-            choice = inquirer.list_input("Give your initial cards", choices=choices)
+            choice = inquirer.list_input(f"Give your initial {category} cards", choices=choices)
             if choice == "Done":
                 break
             self.game.make_note(choice, self.myself)
             choices.remove(choice)
+
+    
+    def get_initial_cards(self):
+        self._get_initial_cards_for_category(self.game.CHARACTERS, "character")
+        self._get_initial_cards_for_category(self.game.WEAPONS, "weapon")
+        self._get_initial_cards_for_category(self.game.ROOMS, "room")
+        return
+
+    
+    def process_suggestion(self):
+        suggestor = inquirer.list_input("Who makes the suggestion?", choices=self.players)
+        character = inquirer.list_input("Character?", choices=self.game.CHARACTERS)
+        weapon = inquirer.list_input("Weapon?", choices=self.game.WEAPONS)
+        room = inquirer.list_input("Room?", choices=self.game.ROOMS)
+        disprovers = self.players.copy()
+        disprovers.append("Nobody")
+        disprovers.remove(suggestor)
+        disprover = inquirer.list_input("Who disproves the suggestion?", choices=disprovers)
+        if suggestor == self.myself and disprover != "Nobody":
+            card = inquirer.list_input(f"What card was shown to you by {disprover}?",
+                choices=[character, weapon, room])
+        else:
+            card = None
+        self.game.process_suggestion(suggestor, character, weapon, room, disprover, card)
+
+    
+    def finished(self):
+        return self.game.is_solved()
      
 
 def main():
@@ -87,7 +115,9 @@ def main():
     game.get_player_names()
     game.get_initial_cards()
     game.print_notebook()
-
+    while not game.finished():
+        game.process_suggestion()
+        game.print_notebook()
 
 if __name__ == "__main__":
     main()
