@@ -2,9 +2,6 @@ from cluedo.cluedo import *
 import inquirer
 
 class ConsoleGame:
-    def __init__(self):
-        pass
-        
     class NotebookPrinter:
         def __init__(self, game, players):
             self.notebook = game.get_notebook()
@@ -26,16 +23,20 @@ class ConsoleGame:
                 player_info += " " + player + " |"
             print(f"|                |   |{player_info}")
 
+
+        def _print_card(self, card):
+            innocent = "X" if self.notebook.get_card_status(card) is CardStatus.Innocent else " "
+            player_info = ""
+            for player in self.players:
+                status = self.notebook.get_player_status(card, player)
+                info = "x" if status is PlayerStatus.Owns else "-" if status is PlayerStatus.DoesNotOwn else " "
+                player_info += info.center(len(player) + 2) + "|"
+            print(f"| {card:<14} | {innocent} |{player_info}")
+
         
         def _print_cards(self, cards):
             for card in cards:
-                innocent = "X" if self.notebook.get_card_status(card) is CardStatus.Innocent else " "
-                player_info = ""
-                for player in self.players:
-                    status = self.notebook.get_player_status(card, player)
-                    info = "x" if status is PlayerStatus.Owns else "-" if status is PlayerStatus.DoesNotOwn else " "
-                    player_info += info.center(len(player) + 2) + "|"
-                print(f"| {card:<14} | {innocent} |{player_info}")
+                self._print_card(card)
 
         
         def print(self):
@@ -50,6 +51,9 @@ class ConsoleGame:
             self._print_header()
 
     
+    def __init__(self):
+        pass
+        
     def print_notebook(self):
         printer = ConsoleGame.NotebookPrinter(self.game, self.players)
         printer.print()
