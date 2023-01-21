@@ -31,14 +31,20 @@ class Notebook:
             except:
                 return PlayerStatus.Unknown
 
-        def make_note(self, player):
-            self.status = CardStatus.Innocent
-            for p in self.players:
-                if p is player:
-                    self.players[p] = PlayerStatus.Owns
-                else:
-                    self.players[p] = PlayerStatus.DoesNotOwn
-            
+        def set_card_status(self, status):
+            self.status = status
+
+        def make_note(self, player, status=PlayerStatus.Owns):
+            if status is PlayerStatus.Owns:
+                self.status = CardStatus.Innocent
+                for p in self.players:
+                    if p is player:
+                        self.players[p] = PlayerStatus.Owns
+                    else:
+                        self.players[p] = PlayerStatus.DoesNotOwn
+            else:
+                self.players[player] = status
+                
 
     def __init__(self, cards, players):
         self.cards = {}
@@ -60,8 +66,16 @@ class Notebook:
             return PlayerStatus.Unknown
 
 
-    def make_note(self, card, player):
+    def set_card_status(self, card, status):
         if card in self.cards:
-            self.cards[card].make_note(player)
+            self.cards[card].set_card_status(status)
+        else:
+            raise ValueError(f"{card} is not a valid character, weapon or room")
+    
+    def make_note(self, card, player, status=PlayerStatus.Owns):
+        if status is PlayerStatus.Unknown:
+            raise ValueError(f"{status} is not a valid player status")
+        if card in self.cards:
+            self.cards[card].make_note(player, status)
         else:
             raise ValueError(f"{card} is not a valid character, weapon or room")
