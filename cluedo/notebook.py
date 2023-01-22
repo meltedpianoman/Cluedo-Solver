@@ -22,18 +22,22 @@ class Notebook:
             for player in players:
                 self.players.update({player: PlayerStatus.Unknown})
 
+        
         def get_card_status(self):
             return self.status
 
+        
         def get_player_status(self, player):
             try:
                 return self.players[player]
             except:
                 return PlayerStatus.Unknown
 
+        
         def set_card_status(self, status):
             self.status = status
 
+        
         def make_note(self, player, status=PlayerStatus.Owns):
             if status is PlayerStatus.Owns:
                 self.status = CardStatus.Innocent

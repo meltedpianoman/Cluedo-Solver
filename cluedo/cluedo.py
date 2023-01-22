@@ -31,6 +31,7 @@ class Cluedo:
         self.players = players
         self.notebook = Notebook(self.ALL_CARDS, self.players)
         self.solved = False
+        self.previous_suggestions = []
 
     def _find_guilty(self, cards):
         for card in cards:
@@ -47,6 +48,19 @@ class Cluedo:
                 return True
         return False
 
+    def _process_previous_suggestions(self):
+        for suggestion in self.previous_suggestions:
+            character_status = self.notebook.get_player_status(suggestion.character, suggestion.disprover)
+            weapon_status = self.notebook.get_player_status(suggestion.weapon, suggestion.disprover)
+            room_status = self.notebook.get_player_status(suggestion.room, suggestion.disprover)
+            if character_status is PlayerStatus.DoesNotOwn and weapon_status is PlayerStatus.DoesNotOwn:
+                self.make_note(suggestion.room, suggestion.disprover)
+            elif weapon_status is PlayerStatus.DoesNotOwn and room_status is PlayerStatus.DoesNotOwn:
+                self.make_note(suggestion.character, suggestion.disprover)
+            elif character_status is PlayerStatus.DoesNotOwn and room_status is PlayerStatus.DoesNotOwn:
+                self.make_note(suggestion.weapon, suggestion.disprover)
+
+    
     def get_players(self):
         return self.players
 
@@ -55,14 +69,15 @@ class Cluedo:
         return self.notebook
 
     
-    def make_note(self, subject, player, status=PlayerStatus.Owns):
-        self.notebook.make_note(subject, player, status)
+    def make_note(self, card, player, status=PlayerStatus.Owns):
+        self.notebook.make_note(card, player, status)
 
         
     def process_suggestion(self, suggestion):
         if suggestion.card_is_known():
             self.notebook.make_note(suggestion.card, suggestion.disprover)
         else:
+            self.previous_suggestions.append(suggestion)
             index = self.players.index(suggestion.suggestor)
             while True:
                 index = (index + 1) % len(self.players)
@@ -74,6 +89,8 @@ class Cluedo:
                 self.notebook.make_note(suggestion.character, player, PlayerStatus.DoesNotOwn)
                 self.notebook.make_note(suggestion.weapon, player, PlayerStatus.DoesNotOwn)
                 self.notebook.make_note(suggestion.room, player, PlayerStatus.DoesNotOwn)
+
+        self._process_previous_suggestions()
 
         if self._find_guilty(Characters) and self._find_guilty(Weapons) and self._find_guilty(Rooms):
             self.solved = True
