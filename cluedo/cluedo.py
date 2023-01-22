@@ -22,7 +22,7 @@ class Cluedo:
         def card_is_known(self):
             return self.card is not None
 
-    def __init__(self, players):
+    def __init__(self, players, initial_cards):
         self.CHARACTERS = []
         self.WEAPONS = []
         self.ROOMS = []
@@ -37,10 +37,17 @@ class Cluedo:
             self.ROOMS.append(card)
             self.ALL_CARDS.append(card)
         self.players = players
+        self.myself = self.players[0]
         self.notebook = Notebook(self.ALL_CARDS, self.players)
         self.solved = False
         self.previous_suggestions = []
 
+        for card in self.ALL_CARDS:
+            if card in initial_cards:
+                self.make_note(card, self.myself, PlayerStatus.Owns)
+            else:
+                self.make_note(card, self.myself, PlayerStatus.DoesNotOwn)
+    
     def _find_guilty(self, cards):
         for card in cards:
             innocent = len(self.players)

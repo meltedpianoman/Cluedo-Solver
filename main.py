@@ -82,27 +82,37 @@ class ConsoleGame:
             if not name:
                 break
             self.players.append(name)
-        self.game = Cluedo(self.players)
 
     
     def _get_initial_cards_for_category(self, cards, category):
-        choices = ["Done"] + cards
+        selected = []
+        choices = ["Done"]
+        for card in cards:
+            choices.append(card)
         while True:
             choice = inquirer.list_input(f"Give your initial {category} cards",
                                          choices=choices)
             choices.remove(choice)
             if choice == "Done":
                 break
-            self.game.make_note(choice, self.myself, PlayerStatus.Owns)
-        for card in choices:
-            self.game.make_note(card, self.myself, PlayerStatus.DoesNotOwn)
+            selected.append(choice)
+
+        return selected
 
     
     def get_initial_cards(self):
-        self._get_initial_cards_for_category(self.game.CHARACTERS, "character")
-        self._get_initial_cards_for_category(self.game.WEAPONS, "weapon")
-        self._get_initial_cards_for_category(self.game.ROOMS, "room")
+        self.initial_cards = []
+        self.initial_cards.extend(
+            self._get_initial_cards_for_category(Characters, "character"))
+        self.initial_cards.extend(
+            self._get_initial_cards_for_category(Weapons, "weapon"))
+        self.initial_cards.extend(
+            self._get_initial_cards_for_category(Rooms, "room"))
         return
+
+    
+    def start_game(self):
+        self.game = Cluedo(self.players, self.initial_cards)
 
     
     def process_suggestion(self):
@@ -136,6 +146,7 @@ def main():
     game = ConsoleGame()
     game.get_player_names()
     game.get_initial_cards()
+    game.start_game()
     game.print_notebook()
     while not game.finished():
         game.process_suggestion()
