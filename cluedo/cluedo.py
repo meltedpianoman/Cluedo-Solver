@@ -63,7 +63,14 @@ class Cluedo:
         if suggestion.card_is_known():
             self.notebook.make_note(suggestion.card, suggestion.disprover)
         else:
-            for player in self.players[1:]:
+            index = self.players.index(suggestion.suggestor)
+            while True:
+                index = (index + 1) % len(self.players)
+                player = self.players[index]
+                if player is suggestion.disprover:
+                    break
+                if player is suggestion.suggestor:
+                    break
                 self.notebook.make_note(suggestion.character, player, PlayerStatus.DoesNotOwn)
                 self.notebook.make_note(suggestion.weapon, player, PlayerStatus.DoesNotOwn)
                 self.notebook.make_note(suggestion.room, player, PlayerStatus.DoesNotOwn)
