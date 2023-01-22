@@ -123,8 +123,9 @@ class ConsoleGame:
                 choices=[character, weapon, room])
         else:
             card = None
-        self.game.process_suggestion(suggestor, character, weapon, room,
-                                     disprover, card)
+        
+        suggestion = Cluedo.Suggestion(suggestor, character, weapon, room, disprover, card)
+        self.game.process_suggestion(suggestion)
 
     
     def finished(self):

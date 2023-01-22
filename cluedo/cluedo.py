@@ -2,6 +2,18 @@ from cluedo.notebook import *
 
 
 class Cluedo:
+    class Suggestion:
+        def __init__(self, suggestor, character, weapon, room, disprover, card = None):
+            self.suggestor = suggestor
+            self.character = character
+            self.weapon = weapon
+            self.room = room
+            self.disprover = disprover
+            self.card = card
+
+        def card_is_known(self):
+            return self.card is not None
+    
     def __init__(self, players):
         self.CHARACTERS = []
         self.WEAPONS = []
@@ -47,14 +59,14 @@ class Cluedo:
         self.notebook.make_note(subject, player, status)
 
         
-    def process_suggestion(self, suggestor, character, weapon, room, disprover, card = None):
-        if card:
-            self.notebook.make_note(card, disprover)
+    def process_suggestion(self, suggestion):
+        if suggestion.card_is_known():
+            self.notebook.make_note(suggestion.card, suggestion.disprover)
         else:
             for player in self.players[1:]:
-                self.notebook.make_note(character, player, PlayerStatus.DoesNotOwn)
-                self.notebook.make_note(weapon, player, PlayerStatus.DoesNotOwn)
-                self.notebook.make_note(room, player, PlayerStatus.DoesNotOwn)
+                self.notebook.make_note(suggestion.character, player, PlayerStatus.DoesNotOwn)
+                self.notebook.make_note(suggestion.weapon, player, PlayerStatus.DoesNotOwn)
+                self.notebook.make_note(suggestion.room, player, PlayerStatus.DoesNotOwn)
 
         if self._find_guilty(Characters) and self._find_guilty(Weapons) and self._find_guilty(Rooms):
             self.solved = True
