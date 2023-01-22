@@ -51,7 +51,7 @@ class Cluedo:
         if card:
             self.notebook.make_note(card, disprover)
         else:
-            for player in self.players:
+            for player in self.players[1:]:
                 self.notebook.make_note(character, player, PlayerStatus.DoesNotOwn)
                 self.notebook.make_note(weapon, player, PlayerStatus.DoesNotOwn)
                 self.notebook.make_note(room, player, PlayerStatus.DoesNotOwn)
