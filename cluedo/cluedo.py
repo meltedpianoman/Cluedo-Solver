@@ -77,11 +77,11 @@ class Cluedo:
             room_status = self.notebook.get_player_status(
                 suggestion.room, suggestion.disprover)
             if character_status is PlayerStatus.Owns:
-                suggestion.card = suggestion.characer
+                suggestion.card = suggestion.character
             elif weapon_status is PlayerStatus.Owns:
                 suggestion.card = suggestion.weapon
             elif room_status is PlayerStatus.Owns:
-                suggestion.card = suggestions.room
+                suggestion.card = suggestion.room
             elif character_status is PlayerStatus.DoesNotOwn and weapon_status is PlayerStatus.DoesNotOwn:
                 suggestion.card = suggestion.room
                 self.make_note(suggestion.room, suggestion.disprover)
@@ -108,29 +108,35 @@ class Cluedo:
                                                     PlayerStatus.DoesNotOwn)
 
     def process_suggestion(self, suggestion):
+        self.previous_suggestions.append(suggestion)       
         if suggestion.card_is_known():
             self.make_note(suggestion.card, suggestion.disprover)
-        else:
-            self.previous_suggestions.append(suggestion)
-            index = self.players.index(suggestion.suggestor)
-            while True:
-                index = (index + 1) % len(self.players)
-                player = self.players[index]
-                if player is suggestion.disprover:
-                    break
-                if player is suggestion.suggestor:
-                    break
-                self.make_note(suggestion.character, player,
-                               PlayerStatus.DoesNotOwn)
-                self.make_note(suggestion.weapon, player,
-                               PlayerStatus.DoesNotOwn)
-                self.make_note(suggestion.room, player,
-                               PlayerStatus.DoesNotOwn)
+
+        index = self.players.index(suggestion.suggestor)
+        while True:
+            index = (index + 1) % len(self.players)
+            player = self.players[index]
+            if player is suggestion.disprover:
+                break
+            if player is suggestion.suggestor:
+                break
+            self.make_note(suggestion.character, player,
+                           PlayerStatus.DoesNotOwn)
+            self.make_note(suggestion.weapon, player,
+                           PlayerStatus.DoesNotOwn)
+            self.make_note(suggestion.room, player,
+                           PlayerStatus.DoesNotOwn)
 
         self._process_previous_suggestions()
 
-        if self._find_guilty(Characters) and self._find_guilty(
-                Weapons) and self._find_guilty(Rooms):
+        cards_guilty = 0
+        if self._find_guilty(Characters):
+            cards_guilty += 1
+        if self._find_guilty(Weapons):
+            cards_guilty +=1
+        if self._find_guilty(Rooms):
+            cards_guilty += 1
+        if cards_guilty == 3:
             self.solved = True
 
     def is_solved(self):

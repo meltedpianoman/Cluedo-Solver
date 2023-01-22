@@ -164,12 +164,15 @@ class ConsoleGame:
         disprovers.remove(suggestor)
         disprover = inquirer.list_input("Who disproves the suggestion?",
                                         choices=disprovers)
+        card = None
         if suggestor == self.myself and disprover != self.game.NOBODY:
             card = inquirer.list_input(
                 f"What card was shown to you by {disprover}?",
                 choices=[character, weapon, room])
-        else:
-            card = None
+        if disprover == self.myself:
+            card = inquirer.list_input(
+                f"What card did you show to {suggestor}?",
+                choices=[character, weapon, room])
         
         suggestion = Cluedo.Suggestion(suggestor, character, weapon, room, disprover, card)
         self.game.process_suggestion(suggestion)
