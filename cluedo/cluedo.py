@@ -23,6 +23,7 @@ class Cluedo:
             return self.card is not None
 
     def __init__(self, players, initial_cards):
+        self.NOBODY = "Nobody"
         self.CHARACTERS = []
         self.WEAPONS = []
         self.ROOMS = []
@@ -66,17 +67,29 @@ class Cluedo:
 
     def _process_previous_suggestions(self):
         for suggestion in self.previous_suggestions:
+            if suggestion.card is not None:
+                continue
+
             character_status = self.notebook.get_player_status(
                 suggestion.character, suggestion.disprover)
             weapon_status = self.notebook.get_player_status(
                 suggestion.weapon, suggestion.disprover)
             room_status = self.notebook.get_player_status(
                 suggestion.room, suggestion.disprover)
-            if character_status is PlayerStatus.DoesNotOwn and weapon_status is PlayerStatus.DoesNotOwn:
+            if character_status is PlayerStatus.Owns:
+                suggestion.card = suggestion.characer
+            elif weapon_status is PlayerStatus.Owns:
+                suggestion.card = suggestion.weapon
+            elif room_status is PlayerStatus.Owns:
+                suggestion.card = suggestions.room
+            elif character_status is PlayerStatus.DoesNotOwn and weapon_status is PlayerStatus.DoesNotOwn:
+                suggestion.card = suggestion.room
                 self.make_note(suggestion.room, suggestion.disprover)
             elif weapon_status is PlayerStatus.DoesNotOwn and room_status is PlayerStatus.DoesNotOwn:
+                suggestion.card = suggestion.character
                 self.make_note(suggestion.character, suggestion.disprover)
             elif character_status is PlayerStatus.DoesNotOwn and room_status is PlayerStatus.DoesNotOwn:
+                suggestion.card = suggestion.weapon
                 self.make_note(suggestion.weapon, suggestion.disprover)
 
     def get_players(self):

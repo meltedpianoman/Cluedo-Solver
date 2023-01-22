@@ -1,6 +1,7 @@
 from cluedo.cluedo import *
 import inquirer
 
+DEBUG=True
 
 class ConsoleGame:
 
@@ -17,13 +18,21 @@ class ConsoleGame:
                 PlayerStatus.Owns: "x",
                 PlayerStatus.DoesNotOwn: "-",
             }
-            self.notebook = game.get_notebook()
+            self.game = game
+            self.notebook = self.game.get_notebook()
             self.players = players
             self.header = "+----------------+---+"
+            self.max_player_name = len(self.game.NOBODY)
             for player in self.players:
                 self.header += "-"
                 self.header += "-" * len(player)
                 self.header += "-+"
+                if len(player) > self.max_player_name:
+                    self.max_player_name = len(player)
+            self.max_card_name = 0
+            for card in self.game.ALL_CARDS:
+                if len(card) > self.max_card_name:
+                    self.max_card_name = len(card)
 
         
         def _print_header(self):
@@ -34,7 +43,7 @@ class ConsoleGame:
             player_info = ""
             for player in self.players:
                 player_info += " " + player + " |"
-            print(f"|                |   |{player_info}")
+            print("|                |   |{}".format(player_info))
 
         
         def _print_card(self, card):
@@ -43,7 +52,7 @@ class ConsoleGame:
             for player in self.players:
                 info = self.playerStatus[self.notebook.get_player_status(card, player)]
                 player_info += info.center(len(player) + 2) + "|"
-            print(f"| {card:<14} |{innocent}|{player_info}")
+            print("| {:<{}} |{}|{}".format(card, self.max_card_name, innocent, player_info))
 
         
         def _print_cards(self, cards):
@@ -51,7 +60,34 @@ class ConsoleGame:
                 self._print_card(card)
 
         
+        def _print_suggestion(self, suggestion):
+            print("|{:<{}}|{:<{}}|{:<{}}|{:<{}}|{:<{}}|{:<{}}|".format(
+                suggestion.suggestor, self.max_player_name,
+                suggestion.character, self.max_card_name,
+                suggestion.weapon, self.max_card_name,
+                suggestion.room, self.max_card_name,
+                suggestion.disprover, self.max_player_name,
+                suggestion.card if suggestion.card is not None else "",
+                self.max_card_name))
+
+
+        def _print_suggestion_history(self):
+            print("SUGGESTIONS")
+            print("|{:<{}}|{:<{}}|{:<{}}|{:<{}}|{:<{}}|{:<{}}|".format(
+                "ASK", self.max_player_name,
+                "CHARACTER", self.max_card_name,
+                "WEAPON", self.max_card_name,
+                "ROOM", self.max_card_name,
+                "GIVE", self.max_player_name,
+                "CARD", self.max_card_name))
+            for suggestion in self.game.previous_suggestions:
+                self._print_suggestion(suggestion)
+
+        
         def print(self):
+            if DEBUG:
+                self._print_suggestion_history()
+                print("")
             self._print_header()
             self._print_players()
             self._print_header()
@@ -61,6 +97,7 @@ class ConsoleGame:
             self._print_header()
             self._print_cards(Rooms)
             self._print_header()
+            print("")
 
     
     def __init__(self):
@@ -123,11 +160,11 @@ class ConsoleGame:
         weapon = inquirer.list_input("Weapon?", choices=self.game.WEAPONS)
         room = inquirer.list_input("Room?", choices=self.game.ROOMS)
         disprovers = self.players.copy()
-        disprovers.append("Nobody")
+        disprovers.append(self.game.NOBODY)
         disprovers.remove(suggestor)
         disprover = inquirer.list_input("Who disproves the suggestion?",
                                         choices=disprovers)
-        if suggestor == self.myself and disprover != "Nobody":
+        if suggestor == self.myself and disprover != self.game.NOBODY:
             card = inquirer.list_input(
                 f"What card was shown to you by {disprover}?",
                 choices=[character, weapon, room])
