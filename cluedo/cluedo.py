@@ -73,6 +73,8 @@ class Cluedo:
             for card in cards:
                 if card is guilty:
                     self.notebook.set_card_status(card, CardStatus.Guilty)
+                    for player in self.players:
+                        self.notebook.set_player_status(card, player, PlayerStatus.DoesNotOwn)
                 else:
                     self.notebook.set_card_status(card, CardStatus.Innocent)
         
