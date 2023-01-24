@@ -4,7 +4,6 @@ from cluedo.notebook import *
 class Cluedo:
 
     class Suggestion:
-
         def __init__(self,
                      suggestor,
                      character,
@@ -50,21 +49,36 @@ class Cluedo:
                 self.make_note(card, self.myself, PlayerStatus.DoesNotOwn)
     
     def _find_guilty(self, cards):
-        for card in cards:
-            innocent = len(self.players)
-            for player in self.players:
-                if self.notebook.get_player_status(
-                        card, player) is PlayerStatus.DoesNotOwn:
-                    innocent -= 1
-            if innocent == 0:
-                for c in cards:
-                    if c is card:
-                        self.notebook.set_card_status(c, CardStatus.Guilty)
-                    else:
-                        self.notebook.set_card_status(c, CardStatus.Innocent)
-                return True
-        return False
+        guilty = None
+        innocent = []
 
+        for card in cards:
+            if self.notebook.get_card_status(card) is CardStatus.Innocent:
+                innocent.append(card)
+            players_that_do_not_own = 0
+            for player in self.players:
+                if self.notebook.get_player_status(card, player) is PlayerStatus.DoesNotOwn:
+                    players_that_do_not_own += 1
+            if players_that_do_not_own == len(self.players):
+                guilty = card
+                break
+
+        if len(innocent) == (len(cards) - 1):
+            for card in cards:
+                if not card in innocent:
+                    guilty = card
+                    break
+
+        if guilty:
+            for card in cards:
+                if card is guilty:
+                    self.notebook.set_card_status(card, CardStatus.Guilty)
+                else:
+                    self.notebook.set_card_status(card, CardStatus.Innocent)
+        
+        return guilty != None
+
+    
     def _process_previous_suggestions(self):
         for suggestion in self.previous_suggestions:
             if suggestion.card is not None:
